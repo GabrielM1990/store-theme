@@ -1,0 +1,45 @@
+{
+  "store.custom#landing-cmoov9bdz0000bxmzqk0d0zxj": {
+    "blocks": [
+      "image#0f652577-6f8b-4f84-9591-22b507087f04",
+      "product-shelf#ba0dfffb-ac79-4634-89dd-4455c4d57910",
+      "slider-layout#ee5d0fb1-0810-4d52-90f9-76d21a009945"
+    ]
+  },
+  "image#0f652577-6f8b-4f84-9591-22b507087f04": {
+    "props": {
+      "src": "",
+      "alt": "",
+      "maxHeight": 300,
+      "link": ""
+    }
+  },
+  "product-shelf#ba0dfffb-ac79-4634-89dd-4455c4d57910": {
+    "props": {
+      "collection": null,
+      "maxItems": 8,
+      "titleText": "Productos Destacados",
+      "hideOutOfStockItems": true,
+      "orderBy": "OrderByTopSaleDESC"
+    }
+  },
+  "slider-layout#ee5d0fb1-0810-4d52-90f9-76d21a009945": {
+    "props": {
+      "items": [
+        {
+          "image": "",
+          "mobileImage": "",
+          "title": "",
+          "link": {
+            "url": ""
+          }
+        }
+      ],
+      "autoplay": {
+        "timeout": 5000
+      },
+      "showNavigationArrows": "always",
+      "showPaginationDots": "always"
+    }
+  }
+}
