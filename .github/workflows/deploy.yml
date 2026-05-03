@@ -2,7 +2,7 @@ name: Deploy VTEX Theme
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, customlanding]
   workflow_dispatch:
     inputs:
       workspace:
@@ -31,16 +31,27 @@ jobs:
       - name: Install VTEX Toolbelt
         run: npm install -g vtex@latest
 
+      - name: Determine workspace from branch
+        id: workspace
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/customlanding" ]]; then
+            echo "workspace=customlanding" >> $GITHUB_OUTPUT
+          else
+            echo "workspace=master" >> $GITHUB_OUTPUT
+          fi
+
       - name: Login to VTEX
         uses: vtex/action-toolbelt@v3
         with:
           account: ${{ secrets.VTEX_ACCOUNT }}
           appKey: ${{ secrets.VTEX_APP_KEY }}
           appToken: ${{ secrets.VTEX_APP_TOKEN }}
-          workspace: ${{ github.event.inputs.workspace || 'master' }}
+          workspace: ${{ steps.workspace.outputs.workspace }}
           authenticate: true
 
       - name: Deploy to workspace
         run: |
-          echo "Deploying to workspace: ${{ github.event.inputs.workspace || 'master' }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Workspace: ${{ steps.workspace.outputs.workspace }}"
+          echo "Deploying to workspace: ${{ steps.workspace.outputs.workspace }}"
           vtex deploy --yes
