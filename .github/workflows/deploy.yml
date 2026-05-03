@@ -49,9 +49,15 @@ jobs:
           workspace: ${{ steps.workspace.outputs.workspace }}
           authenticate: true
 
-      - name: Deploy to workspace
+      - name: Deploy/Link to workspace
         run: |
           echo "Branch: ${{ github.ref_name }}"
           echo "Workspace: ${{ steps.workspace.outputs.workspace }}"
-          echo "Deploying to workspace: ${{ steps.workspace.outputs.workspace }}"
-          vtex deploy --yes
+          
+          if [[ "${{ steps.workspace.outputs.workspace }}" == "master" ]]; then
+            echo "Deploying to production workspace: master"
+            vtex deploy --yes
+          else
+            echo "Linking to development workspace: ${{ steps.workspace.outputs.workspace }}"
+            vtex link --verbose
+          fi
