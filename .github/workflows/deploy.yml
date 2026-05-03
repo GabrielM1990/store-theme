@@ -4,6 +4,16 @@ on:
   push:
     branches: [main, master]
   workflow_dispatch:
+    inputs:
+      workspace:
+        description: 'VTEX Workspace to deploy to'
+        required: true
+        default: 'master'
+        type: choice
+        options:
+          - master
+          - customlanding
+          - develop
 
 jobs:
   deploy:
@@ -27,8 +37,10 @@ jobs:
           account: ${{ secrets.VTEX_ACCOUNT }}
           appKey: ${{ secrets.VTEX_APP_KEY }}
           appToken: ${{ secrets.VTEX_APP_TOKEN }}
-          workspace: master
+          workspace: ${{ github.event.inputs.workspace || 'master' }}
           authenticate: true
 
-      - name: Deploy to production
-        run: vtex deploy --yes
+      - name: Deploy to workspace
+        run: |
+          echo "Deploying to workspace: ${{ github.event.inputs.workspace || 'master' }}"
+          vtex deploy --yes
