@@ -21,33 +21,24 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: '18'
 
       - name: Install VTEX Toolbelt
         run: npm install -g vtex@latest
 
-      - name: Determine workspace
+      - name: Determine workspace from branch
         id: workspace
         run: |
-          # Priorizar workflow_dispatch sobre branch
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            WORKSPACE="${{ github.event.inputs.workspace }}"
+          if [[ "${{ github.ref }}" == "refs/heads/customlanding" ]]; then
+            echo "workspace=customlanding" >> $GITHUB_OUTPUT
           else
-            # Para push automáticos, determinar por branch
-            if [[ "${{ github.ref }}" == "refs/heads/customlanding" ]]; then
-              WORKSPACE="customlanding"
-            else
-              WORKSPACE="master"
-            fi
+            echo "workspace=master" >> $GITHUB_OUTPUT
           fi
-          
-          echo "workspace=${WORKSPACE}" >> $GITHUB_OUTPUT
-          echo "Selected workspace: ${WORKSPACE}"
 
       - name: Login to VTEX
         uses: vtex/action-toolbelt@v3
@@ -58,25 +49,9 @@ jobs:
           workspace: ${{ steps.workspace.outputs.workspace }}
           authenticate: true
 
-      - name: Deploy or Release to workspace
+      - name: Deploy to workspace
         run: |
           echo "Branch: ${{ github.ref_name }}"
           echo "Workspace: ${{ steps.workspace.outputs.workspace }}"
-          
-          if [[ "${{ steps.workspace.outputs.workspace }}" == "master" ]]; then
-            echo "🚀 Deploying to production workspace: master"
-            vtex deploy --yes
-            
-          elif [[ "${{ steps.workspace.outputs.workspace }}" == "customlanding" ]] || [[ "${{ steps.workspace.outputs.workspace }}" == "develop" ]]; then
-            echo "📦 Publishing to development workspace: ${{ steps.workspace.outputs.workspace }}"
-            # Usar deploy en lugar de link para entornos no productivos
-            vtex deploy --yes --workspace ${{ steps.workspace.outputs.workspace }}
-          fi
-          
-      - name: Verify deployment
-        run: |
-          echo "✅ Deployment completed!"
-          echo "🔗 Store URL: https://${{ steps.workspace.outputs.workspace }}--${{ secrets.VTEX_ACCOUNT }}.myvtex.com"
-          
-          # Mostrar información del workspace
-          vtex workspace info
+          echo "🚀 Deploying to workspace: ${{ steps.workspace.outputs.workspace }}"
+          vtex deploy --yes
