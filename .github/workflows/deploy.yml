@@ -39,7 +39,7 @@ jobs:
           else
             echo "workspace=master" >> $GITHUB_OUTPUT
           fi
-
+          
       - name: Login to VTEX
         uses: vtex/action-toolbelt@v3
         with:
@@ -49,15 +49,52 @@ jobs:
           workspace: ${{ steps.workspace.outputs.workspace }}
           authenticate: true
 
-      - name: Deploy/Publish to workspace
+      - name: Generate unique version
+        id: version
+        run: |
+          # Leer versión base del manifest.json
+          BASE_VERSION=$(node -p "require('./manifest.json').version")
+          
+          # Extraer versión mayor (sin timestamp)
+          CLEAN_VERSION=$(echo $BASE_VERSION | cut -d'-' -f1)
+          
+          # Incrementar patch version (5.2.1 -> 5.2.2)
+          MAJOR=$(echo $CLEAN_VERSION | cut -d'.' -f1)
+          MINOR=$(echo $CLEAN_VERSION | cut -d'.' -f2)
+          PATCH=$(echo $CLEAN_VERSION | cut -d'.' -f3)
+          NEW_PATCH=$((PATCH + 1))
+          NEW_BASE_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
+          
+          # Generar timestamp
+          TIMESTAMP=$(date +'%Y%m%d%H%M%S')
+          
+          # Versión final para el deploy
+          if [[ "${{ steps.workspace.outputs.workspace }}" == "master" ]]; then
+            FINAL_VERSION="${NEW_BASE_VERSION}"
+          else
+            FINAL_VERSION="${NEW_BASE_VERSION}-${TIMESTAMP}"
+          fi
+          
+          echo "unique_version=${FINAL_VERSION}" >> $GITHUB_OUTPUT
+          echo "base_version=${NEW_BASE_VERSION}" >> $GITHUB_OUTPUT
+          echo "📌 New version: ${FINAL_VERSION}"
+          
+          # Actualizar manifest.json
+          node -e "const fs = require('fs'); const manifest = JSON.parse(fs.readFileSync('./manifest.json', 'utf8')); manifest.version = '${NEW_BASE_VERSION}'; fs.writeFileSync('./manifest.json', JSON.stringify(manifest, null, 2));"
+          
+          echo "✅ manifest.json updated to base version: ${NEW_BASE_VERSION}"
+
+      - name: Publish and Deploy
         run: |
           echo "Branch: ${{ github.ref_name }}"
           echo "Workspace: ${{ steps.workspace.outputs.workspace }}"
+          echo "Version: ${{ steps.version.outputs.unique_version }}"
           
-          if [[ "${{ steps.workspace.outputs.workspace }}" == "master" ]]; then
-            echo "🚀 Deploying to production: master"
-            vtex deploy --yes
-          else
-            echo "📦 Publishing to development workspace: ${{ steps.workspace.outputs.workspace }}"
-            vtex publish --yes --tag ${{ steps.workspace.outputs.workspace }}
-          fi
+          # Cambiar al workspace
+          echo "y" | vtex workspace use ${{ steps.workspace.outputs.workspace }}
+          
+          # Publicar la app (usando la versión única)
+          vtex publish --yes
+          
+          # Deployar al workspace
+          vtex deploy --yes
