@@ -39,6 +39,7 @@ jobs:
           else
             echo "workspace=master" >> $GITHUB_OUTPUT
           fi
+          
       - name: Login to VTEX
         uses: vtex/action-toolbelt@v3
         with:
@@ -48,11 +49,9 @@ jobs:
           workspace: ${{ steps.workspace.outputs.workspace }}
           authenticate: true
 
-      - name: Deploy to workspace
+      - name: Release to workspace
         run: |
-          echo "Branch: ${{ github.ref_name }}"
           echo "Workspace: ${{ steps.workspace.outputs.workspace }}"
-          echo "📤 Publishing app..."
-          vtex publish --yes
-          echo "🚀 Deploying to workspace: ${{ steps.workspace.outputs.workspace }}"
-          vtex deploy --yes
+          
+          # release hace: bump version -> publish -> deploy
+          vtex release patch --yes
