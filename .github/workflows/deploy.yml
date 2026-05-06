@@ -60,4 +60,6 @@ jobs:
           else
             echo "📦 Publishing to development workspace: ${{ steps.workspace.outputs.workspace }}"
             vtex publish --yes --tag ${{ steps.workspace.outputs.workspace }}
+            echo "🔧 Installing app in workspace..."
+            vtex install --yes
           fi
