@@ -72,5 +72,5 @@ jobs:
             echo "📦 Publishing to development workspace: ${{ steps.workspace.outputs.workspace }}"
             vtex publish --yes --tag ${{ steps.workspace.outputs.workspace }}
             echo "🔧 Installing app in workspace..."
-            vtex install ${{ steps.appinfo.outputs.vendor }}.${{ steps.appinfo.outputs.name }}@${{ steps.appinfo.outputs.version }} --yes
+            vtex install ${{ steps.appinfo.outputs.vendor }}.${{ steps.appinfo.outputs.name }}@${{ steps.appinfo.outputs.version }}
           fi
