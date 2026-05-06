@@ -67,11 +67,11 @@ jobs:
           APP_NAME="${{ steps.appinfo.outputs.vendor }}.${{ steps.appinfo.outputs.name }}"
           
           if [[ "${{ steps.workspace.outputs.workspace }}" == "master" ]]; then
-            echo "🚀 Deploying to production: master"
+            echo " Deploying to production: master"
             vtex deploy --yes
           else
-            echo "� Publishing to workspace: ${{ steps.workspace.outputs.workspace }}"
+            echo " Publishing to workspace: ${{ steps.workspace.outputs.workspace }}"
             vtex publish --yes --tag ${{ steps.workspace.outputs.workspace }}
-            echo "🔧 Installing by tag: ${APP_NAME}@${{ steps.workspace.outputs.workspace }}"
-            vtex install "${APP_NAME}@${{ steps.workspace.outputs.workspace }}"
+            echo " Installing version: ${APP_NAME}@${{ steps.appinfo.outputs.version }}"
+            vtex install "${APP_NAME}@${{ steps.appinfo.outputs.version }}"
           fi
