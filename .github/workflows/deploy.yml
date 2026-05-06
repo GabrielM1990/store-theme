@@ -49,18 +49,7 @@ jobs:
           workspace: ${{ steps.workspace.outputs.workspace }}
           authenticate: true
 
-      - name: Get app info from manifest
-        id: appinfo
-        run: |
-          VENDOR=$(node -p "require('./manifest.json').vendor")
-          NAME=$(node -p "require('./manifest.json').name")
-          VERSION=$(node -p "require('./manifest.json').version")
-          echo "vendor=${VENDOR}" >> $GITHUB_OUTPUT
-          echo "name=${NAME}" >> $GITHUB_OUTPUT
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "📦 App: ${VENDOR}.${NAME}@${VERSION}"
-
-      - name: Deploy/Publish to workspace
+      - name: Deploy/Link to workspace
         run: |
           echo "Branch: ${{ github.ref_name }}"
           echo "Workspace: ${{ steps.workspace.outputs.workspace }}"
@@ -69,8 +58,6 @@ jobs:
             echo "🚀 Deploying to production: master"
             vtex deploy --yes
           else
-            echo "📦 Publishing to development workspace: ${{ steps.workspace.outputs.workspace }}"
-            vtex publish --yes --tag ${{ steps.workspace.outputs.workspace }}
-            echo "🔧 Installing app in workspace..."
-            vtex install ${{ steps.appinfo.outputs.vendor }}.${{ steps.appinfo.outputs.name }}@${{ steps.appinfo.outputs.version }}
+            echo "🔗 Linking to development workspace: ${{ steps.workspace.outputs.workspace }}"
+            vtex link --yes
           fi
