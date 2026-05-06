@@ -70,8 +70,10 @@ jobs:
             echo " Deploying to production: master"
             vtex deploy --yes
           else
+            echo " Switching to workspace: ${{ steps.workspace.outputs.workspace }}"
+            echo "y" | vtex workspace use ${{ steps.workspace.outputs.workspace }} || vtex workspace create ${{ steps.workspace.outputs.workspace }}
             echo " Publishing to workspace: ${{ steps.workspace.outputs.workspace }}"
-            vtex publish --yes --tag ${{ steps.workspace.outputs.workspace }}
-            echo " Installing version: ${APP_NAME}@${{ steps.appinfo.outputs.version }}"
-            vtex install "${APP_NAME}@${{ steps.appinfo.outputs.version }}"
+            vtex publish --yes
+            echo " Installing app in workspace..."
+            vtex install
           fi
