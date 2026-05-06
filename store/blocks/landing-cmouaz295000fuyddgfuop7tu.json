@@ -1,0 +1,82 @@
+{
+  "store.custom#landing-cmouaz295000fuyddgfuop7tu": {
+    "blocks": [
+      "rich-text#7cc09e2c-8228-4bea-8684-ce90208a41e7",
+      "list-context.product-list#9618d4d7-e46f-4ff8-ba3e-2c1c3883793e",
+      "image#7df63075-0d55-4f32-a28e-dcb5eb123a12",
+      "list-context.product-list#16a9630c-372f-4b49-bc64-3af7c5561280"
+    ]
+  },
+  "rich-text#7cc09e2c-8228-4bea-8684-ce90208a41e7": {
+    "props": {
+      "text": "## Bienvenido a nuestra tienda\n\nDescubre nuestros productos destacados y las mejores ofertas.",
+      "textAlignment": "LEFT",
+      "textColor": "#000000",
+      "fontSize": "16px"
+    }
+  },
+  "slider-layout#9618d4d7-e46f-4ff8-ba3e-2c1c3883793e-slider": {
+    "props": {
+      "itemsPerPage": {
+        "desktop": 4,
+        "tablet": 3,
+        "phone": 1
+      },
+      "infinite": true,
+      "showNavigationArrows": "desktopOnly",
+      "showPaginationDots": "mobileOnly",
+      "fullWidth": false,
+      "blockClass": "shelf"
+    }
+  },
+  "list-context.product-list#9618d4d7-e46f-4ff8-ba3e-2c1c3883793e": {
+    "props": {
+      "collection": "158",
+      "maxItems": 8,
+      "titleText": "Productos Destacados",
+      "hideOutOfStockItems": true,
+      "orderBy": "OrderByTopSaleDESC"
+    },
+    "blocks": [
+      "product-summary.shelf"
+    ],
+    "children": [
+      "slider-layout#9618d4d7-e46f-4ff8-ba3e-2c1c3883793e-slider"
+    ]
+  },
+  "image#7df63075-0d55-4f32-a28e-dcb5eb123a12": {
+    "props": {
+      "src": "https://pintureriasgarinar.vtexassets.com/assets/vtex.file-manager-graphql/images/31fbdac4-75f8-408e-ba88-b2e76204acac___905a8620617609c3a9cbaa439018a2eb.png",
+      "maxHeight": 300
+    }
+  },
+  "slider-layout#16a9630c-372f-4b49-bc64-3af7c5561280-slider": {
+    "props": {
+      "itemsPerPage": {
+        "desktop": 4,
+        "tablet": 3,
+        "phone": 1
+      },
+      "infinite": true,
+      "showNavigationArrows": "desktopOnly",
+      "showPaginationDots": "mobileOnly",
+      "fullWidth": false,
+      "blockClass": "shelf"
+    }
+  },
+  "list-context.product-list#16a9630c-372f-4b49-bc64-3af7c5561280": {
+    "props": {
+      "collection": "158",
+      "maxItems": 8,
+      "titleText": "Productos Destacados",
+      "hideOutOfStockItems": true,
+      "orderBy": "OrderByTopSaleDESC"
+    },
+    "blocks": [
+      "product-summary.shelf"
+    ],
+    "children": [
+      "slider-layout#16a9630c-372f-4b49-bc64-3af7c5561280-slider"
+    ]
+  }
+}
